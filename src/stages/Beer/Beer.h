@@ -1,8 +1,8 @@
 #ifndef Beer_h
 #define Beer_h
 
-#include "Arduboy2/src/Arduboy2.h"
-#include <string>
+#include "../Stage.h"
+#include <Arduboy2.h>
 
 enum class BeerState {
     FULL = 1,
@@ -10,19 +10,22 @@ enum class BeerState {
     HALF,
     BOTTOM,
     EMPTY
-}
+};
 
 class Beer : public Stage
 {
     public:
-        Stage(Arduboy2 *arbuboy);
+        Beer(Arduboy2 *arbuboy, StageSpeed speed);
         void setup();
         void loop();
-        bool isFinished();
-        int getScore();
-        std::string getScoreLabel();
-
+        
     private:
+        void newBeer();
+        void startingLoop();
+        void runningLoop();
+        void endingLoop();
+        void wrapUp();
+
         int currentBeer;
         int currentBeerSips;
         int currentBeerMaxSips;
@@ -30,6 +33,6 @@ class Beer : public Stage
         int beerDrunk;
         int maxBeer;
         BeerState currentBeerState;
-}
+};
 
 #endif

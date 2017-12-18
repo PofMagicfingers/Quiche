@@ -1,21 +1,24 @@
 #include "Stage.h"
 
-using namespace std;
-
-Stage::Stage(Arduboy2 *arduboy, StageSpeed speed) {
-    _arduboy = arduboy;
-    speed = speed;
+Stage::Stage(Arduboy2 *arduboy, StageSpeed speed) : 
+_arduboy(arduboy), speed(speed) {
 }
 
-virtual void Stage::setup()
+void Stage::setup()
 {
+    boomBox.setup(_arduboy);    
     score = 0;
     score_label = "points";
     finished = false;
     stageStatus = StageStatus::STARTING;
 }
 
-virtual void Stage::loop() {
+void Stage::loop() {
+    if (!(*_arduboy).nextFrame()) {
+        return;
+    }
+    (*_arduboy).pollButtons();
+
     switch(stageStatus) {
         case StageStatus::STARTING:
             startingLoop();
@@ -31,6 +34,7 @@ virtual void Stage::loop() {
 
 void Stage::startingLoop()
 {
+    boomBox.play(level_music);
 }
 
 void Stage::runningLoop()
@@ -41,7 +45,7 @@ void Stage::endingLoop()
 {
 }
 
-virtual void Stage::wrapUp()
+void Stage::wrapUp()
 {
     stageStatus = StageStatus::ENDING;
 }
@@ -57,7 +61,7 @@ int Stage::getScore()
     return score;
 }
 
-string Stage::getScoreLabel()
+String Stage::getScoreLabel()
 {
     return score_label;
 }

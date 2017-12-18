@@ -1,7 +1,7 @@
 #ifndef Hand_h
 #define Hand_h
 
-#include "stages/Stage.h"
+#include "../Stage.h"
 
 class Hand : public Stage
 {
@@ -11,11 +11,11 @@ class Hand : public Stage
         void loop();
         bool isFinished();
         int getScore();
-        std::string getScoreLabel();
+        String getScoreLabel();
 
     private:
         Arduboy2 *_arduboy
-        std::string score_label;        
+        String score_label;        
 }
 
 #endif

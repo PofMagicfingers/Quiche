@@ -1,15 +1,13 @@
 #include "BoomBox.h"
-#include "../lib/Arduboy2/src/Arduboy2.h"
-#include "../lib/ArduboyPlaytune/src/ArduboyPlaytune.h"
+#include "../assets/scores/connemara.h"
+#include "../assets/scores/feder.h"
 
-Arduboy2 arduboy;
-ArduboyPlaytune tunes(arduboy.audio.enabled);
-bool setupDone = false;
-
-void BoomBox::setup()
+void BoomBox::setup(Arduboy2 *arduboy)
 {
     if (!setupDone)
     {
+        arduboyPtr = arduboy;
+        tunes = ArduboyPlaytune((*arduboyPtr).audio.enabled);
         // audio setup
         tunes.initChannel(PIN_SPEAKER_1);
 #ifndef AB_DEVKIT
@@ -24,4 +22,25 @@ void BoomBox::setup()
 
         setupDone = true;
     }
+}
+
+void BoomBox::play(String track) {
+    if(track == "connemara") {
+        tunes.playScore(connemara);
+    }
+    if(track == "feder") {
+        tunes.playScore(feder);
+    }
+}
+
+void BoomBox::setSpeed(float speed) {
+    tunes.scorePlaybackSpeed(speed);
+}
+
+void BoomBox::stop() {
+    tunes.stopScore();
+}
+
+boolean BoomBox::isPlaying() {
+    return tunes.playing();
 }
