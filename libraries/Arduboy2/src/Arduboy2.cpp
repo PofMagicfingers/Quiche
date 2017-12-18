@@ -190,6 +190,10 @@ void Arduboy2Base::setFrameRate(uint8_t rate)
   eachFrameMillis = 1000 / rate;
 }
 
+int Arduboy2Base::getFrameRate() {
+  return 1000 / eachFrameMillis;
+}
+
 bool Arduboy2Base::everyXFrames(uint8_t frames)
 {
   return frameCount % frames == 0;

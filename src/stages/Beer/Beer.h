@@ -3,6 +3,7 @@
 
 #include "../Stage.h"
 #include <Arduboy2.h>
+#include "../../Timer.h"
 
 enum class BeerState {
     FULL = 1,
@@ -33,6 +34,8 @@ class Beer : public Stage
         int beerDrunk;
         int maxBeer;
         BeerState currentBeerState;
+
+        Timer runningTimer = 0;
 };
 
 #endif

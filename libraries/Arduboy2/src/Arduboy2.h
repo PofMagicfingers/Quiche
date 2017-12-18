@@ -672,6 +672,18 @@ class Arduboy2Base : public Arduboy2Core
   void setFrameRate(uint8_t rate);
 
   /** \brief
+   * Get the frame rate used by the frame control functions.
+   *
+   *
+   * \details
+   * Get the frame rate, in frames per second.
+   *
+   *
+   * \see setFrameRate()
+   */
+  int getFrameRate();
+    
+  /** \brief
    * Indicate that it's time to render the next frame.
    *
    * \return `true` if it's time for the next frame.

@@ -22,26 +22,30 @@ class Stage
 {
     public:
         Stage(Arduboy2 *arbuboy, StageSpeed speed);
-        virtual void setup();
-        virtual void loop();
-        virtual void wrapUp();
+        void setup();
+        void loop();
+        void wrapUp();
         bool isFinished();
         int getScore();
         String getScoreLabel();
 
     protected:
-        virtual void startingLoop();
-        virtual void runningLoop();
-        virtual void endingLoop();
+        virtual void startingLoop() = 0;
+        virtual void runningLoop() = 0;
+        virtual void endingLoop() = 0;
+        void setStatus(StageStatus);
 
         Arduboy2 *_arduboy;
         String score_label;
         String level_music;
         int score;
         bool finished;
-        StageStatus stageStatus;
         StageSpeed speed;
         BoomBox boomBox;        
+        int _secElapsed;
+
+    private:
+        StageStatus stageStatus;        
 };
 
 #endif

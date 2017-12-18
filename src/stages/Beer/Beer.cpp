@@ -17,32 +17,43 @@ void Beer::newBeer() {
     currentBeerSipsStep = (currentBeerMaxSips/5.0);
 }
 
+void Beer::loop() {
+    Stage::loop();
+}
+
 void Beer::setup()
 {
     Stage::setup();
+
+    runningTimer = Timer(_arduboy);
+    runningTimer.setTimeout(3.5);
+
     currentBeer = 0;
     beerDrunk = 0;
-    maxBeer = 0;
     score_label = "bières";
     level_music = "none";
     newBeer();
 }
 
-void Beer::loop() {
-    Stage::loop();
-}
-
-
 void Beer::startingLoop()
 {
-    Stage::startingLoop();
-    stageStatus = StageStatus::RUNNING;
-    (*arduboy).printLn("coucou !")
+    (*_arduboy).setCursor(0, 0);
+    (*_arduboy).println("starting !");
+    (*_arduboy).print("uptime: ");
+    (*_arduboy).print(runningTimer.timeElapsed());
+    (*_arduboy).display(CLEAR_BUFFER);
+
+    if(runningTimer.isElapsed()) {
+        runningTimer.reset();
+        runningTimer.setTimeout(5);
+        setStatus(StageStatus::RUNNING);
+    }    
+
+    runningTimer.tick();
 }
 
 void Beer::runningLoop()
 {
-    Stage::runningLoop();
     if(beerDrunk >= maxBeer) {
         wrapUp();
     } else {
@@ -61,20 +72,33 @@ void Beer::runningLoop()
             }
         }
     }
-    if((*_arduboy).everyXFrames(50)) {
-        (*arduboy).printLn("bye !")
+
+    (*_arduboy).setCursor(0, 0);
+    (*_arduboy).println("running!");
+    (*_arduboy).print("uptime: ");
+    (*_arduboy).print(runningTimer.timeElapsed());
+    (*_arduboy).display(CLEAR_BUFFER);
+
+    if(runningTimer.isElapsed()) {
         wrapUp();
     }
+    
+    runningTimer.tick();
 }
 
 void Beer::endingLoop()
 {
-    Stage::endingLoop();
+    (*_arduboy).setCursor(0, 0);
+    (*_arduboy).println("finished!");    
+    (*_arduboy).display(CLEAR_BUFFER);
     finished = true;
 }
 
 void Beer::wrapUp()
 {
+    (*_arduboy).setCursor(0, 0);
+    (*_arduboy).println("bye !");
+    (*_arduboy).display(CLEAR_BUFFER);
     Stage::wrapUp();
     boomBox.stop();
 }
