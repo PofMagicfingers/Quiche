@@ -17,10 +17,6 @@ void Beer::newBeer() {
     currentBeerSipsStep = (currentBeerMaxSips/5.0);
 }
 
-void Beer::loop() {
-    Stage::loop();
-}
-
 void Beer::setup()
 {
     Stage::setup();
