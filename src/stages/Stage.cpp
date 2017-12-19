@@ -16,10 +16,7 @@ void Stage::setup()
 
 void Stage::loop() {
     if ((*_arduboy).nextFrame()) {
-        (*_arduboy).setCursor(0,0);
-        (*_arduboy).println("looping");
-        (*_arduboy).display(true);
-//        (*_arduboy).pollButtons();
+        (*_arduboy).pollButtons();
 
         switch(stageStatus) {
             case StageStatus::STARTING:

@@ -2,10 +2,18 @@
 
 Timer::Timer(Arduboy2 *arduboy) : arduboyPtr(arduboy)
 {
+    frameElapsed = 0;
+    timeOutSec = 0;
+    running = false;
+    stopped = false;
 }
 
-void Timer::setTimeout(float seconds) {
+void Timer::setTimeout(double seconds) {
     timeOutSec = seconds;
+}
+
+void Timer::setTimeout(int seconds) {
+    timeOutSec = (double)seconds;
 }
 
 void Timer::tick() {

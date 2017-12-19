@@ -33,7 +33,7 @@ class Beer : public Stage
         int maxBeer;
         BeerState currentBeerState;
 
-        Timer sceneTimer = 0;
+        Timer *sceneTimer;
 };
 
 #endif

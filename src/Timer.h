@@ -7,20 +7,21 @@ class Timer
 {
   public:
     Timer(Arduboy2 *arduboy);
-    void setTimeout(float seconds);
+    void setTimeout(int seconds);
+    void setTimeout(double seconds);
     void tick();
     float timeElapsed();
     bool isElapsed();
     bool isRunning();
     void reset();
     void stop();
-    int frameElapsed = 0;
-    
+    int frameElapsed;
+    double timeOutSec;
+    bool running;
+    bool stopped;
+
   private:
     Arduboy2 *arduboyPtr;
-    int timeOutSec = 0;
-    bool running = false;
-    bool stopped = false;
   };
 
 #endif

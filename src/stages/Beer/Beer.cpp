@@ -1,67 +1,74 @@
 #include "Beer.h"
 
-Beer::Beer(Arduboy2 *arbuboyPtr, StageSpeed speed) : 
-    Stage(arbuboyPtr, speed) {
-    if((int)speed > 3) {
+Beer::Beer(Arduboy2 *arbuboyPtr, StageSpeed speed) : Stage(arbuboyPtr, speed)
+{
+    if ((int)speed > 3)
+    {
         maxBeer = (int)speed - (rand() % 3);
-    } else {
+    }
+    else
+    {
         maxBeer = (int)speed + (rand() % 3);
     }
+    score_label = "bières";
+    level_music = "!connemara";
 }
 
-void Beer::newBeer() {
+void Beer::newBeer()
+{
     currentBeerState = BeerState::FULL;
     currentBeer++;
     currentBeerSips = 0;
     currentBeerMaxSips = (5 + rand() % 4);
-    currentBeerSipsStep = (currentBeerMaxSips/5.0);
+    currentBeerSipsStep = (currentBeerMaxSips / 5.0);
 }
 
 void Beer::setup()
 {
+    Stage::setup();
     currentBeer = 0;
     beerDrunk = 0;
-    score_label = "bières";
-    level_music = "!connemara";
     newBeer();
 
-    // sceneTimer = Timer(_arduboy);
-    // sceneTimer.setTimeout(2.5);
-    Stage::setup();    
+
+    sceneTimer = new Timer(_arduboy);
+    sceneTimer->setTimeout(2.5);
 }
 
 void Beer::startingLoop()
 {
     (*_arduboy).setCursor(0, 0);
     (*_arduboy).println("starting !");
-    // (*_arduboy).print("uptime: ");
-    // (*_arduboy).println(sceneTimer.timeElapsed());
-    // (*_arduboy).print("f elap: ");
-    // (*_arduboy).println(sceneTimer.frameElapsed);
+    (*_arduboy).print("uptime: ");
+    (*_arduboy).println(sceneTimer->timeElapsed());
     (*_arduboy).display(CLEAR_BUFFER);
+    
+    if(sceneTimer->isElapsed()) {
+        setStatus(StageStatus::RUNNING);
+    }
 
-    // if(sceneTimer.isElapsed()) {
-    //     sceneTimer.stop();
-    //     setStatus(StageStatus::RUNNING);
-    // }
-
-    // sceneTimer.tick();    
+    sceneTimer->tick();
 }
 
 void Beer::runningLoop()
 {
-    if(beerDrunk >= maxBeer) {
+    if (beerDrunk >= maxBeer)
+    {
         wrapUp();
-    } else {
-        BeerState state = (BeerState)round(currentBeerSips/currentBeerSipsStep);
+    }
+    else
+    {
+        BeerState state = (BeerState)round(currentBeerSips / currentBeerSipsStep);
 
-        if(state != currentBeerState) {
+        if (state != currentBeerState)
+        {
             currentBeerState = state;
             // glouglou sound
             // beerSprite.setStep((int)state);
             // beerSprite.draw()
 
-            if(state == BeerState::EMPTY) {
+            if (state == BeerState::EMPTY)
+            {
                 beerDrunk++;
                 newBeer();
                 score++;
@@ -69,42 +76,40 @@ void Beer::runningLoop()
         }
     }
 
-    
     (*_arduboy).setCursor(0, 0);
     (*_arduboy).println("running!");
     // (*_arduboy).print("uptime: ");
-    // (*_arduboy).print(sceneTimer.timeElapsed());
+    // (*_arduboy).print(sceneTimer->timeElapsed());
     (*_arduboy).display(CLEAR_BUFFER);
 
-
-    // if(!sceneTimer.isRunning()) {
-    //     sceneTimer.reset();
-    //     sceneTimer.setTimeout(5);
+    // if(!sceneTimer->isRunning()) {
+    //     sceneTimer->reset();
+    //     sceneTimer->setTimeout(5);
     // }
 
-    // if(sceneTimer.isElapsed()) {
-    //     sceneTimer.stop();
+    // if(sceneTimer->isElapsed()) {
+    //     sceneTimer->stop();
     //     setStatus(StageStatus::ENDING);
     // }
 
-    // sceneTimer.tick();
+    // sceneTimer->tick();
 }
 
 void Beer::endingLoop()
 {
     // (*_arduboy).setCursor(0, 0);
-    // (*_arduboy).println("wrapping up in 2.5 !");    
+    // (*_arduboy).println("wrapping up in 2.5 !");
     // (*_arduboy).display(CLEAR_BUFFER);
 
-    // if(!sceneTimer.isRunning()) {
-    //     sceneTimer.reset();
-    //     sceneTimer.setTimeout(2.5);
+    // if(!sceneTimer->isRunning()) {
+    //     sceneTimer->reset();
+    //     sceneTimer->setTimeout(2.5);
     // }
 
-    // if(sceneTimer.isElapsed()) {
-    //     sceneTimer.stop();
+    // if(sceneTimer->isElapsed()) {
+    //     sceneTimer->stop();
     //     wrapUp();
     // }
-    
-    // sceneTimer.tick();
+
+    // sceneTimer->tick();
 }
