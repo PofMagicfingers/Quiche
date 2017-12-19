@@ -13,6 +13,7 @@ enum class StageSpeed {
 };
 
 enum class StageStatus {
+    SETUP,
     STARTING,
     RUNNING,
     ENDING
@@ -22,9 +23,9 @@ class Stage
 {
     public:
         Stage(Arduboy2 *arbuboy, StageSpeed speed);
-        void setup();
-        void loop();
-        void wrapUp();
+        virtual void setup();
+        virtual void loop();
+        virtual void wrapUp();
         bool isFinished();
         int getScore();
         String getScoreLabel();
@@ -42,7 +43,6 @@ class Stage
         bool finished;
         StageSpeed speed;
         BoomBox boomBox;        
-        int _secElapsed;
 
     private:
         StageStatus stageStatus;        

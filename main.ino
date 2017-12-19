@@ -20,28 +20,31 @@ With the DevKit only one part is played.
 #include "src/stages/Stage.h"
 #include "src/stages/Beer/Beer.h"
 
-Arduboy2 arduboy;
-Stage *currentStage(0);
-Beer beerStage(&arduboy, StageSpeed::SLOW);
+Arduboy2 * arduboy = new Arduboy2();
+Stage * currentStage;
 
 void setup()
 {
-  arduboy.begin();
+  arduboy->boot();
 
-  arduboy.setFrameRate(25);
-  arduboy.setTextSize(1);
+  arduboy->setFrameRate(25);
+  arduboy->setTextSize(1);
 
-  arduboy.clear();
-  arduboy.println("booting");
-  arduboy.display(CLEAR_BUFFER);
-
-  if(!currentStage) {
-    currentStage = new Beer(&arduboy, StageSpeed::SLOW);
-    currentStage->setup();
-  }
+  arduboy->audio.on();
 }
 
 void loop()
 {
-  currentStage->loop();    
+  if(!currentStage) {
+    currentStage = new Beer(arduboy, StageSpeed::SLOW);
+    currentStage->setup();
+  }
+
+  if(currentStage->isFinished()) {
+    arduboy->setCursor(0,0);
+    arduboy->println("FINITOTO!");
+    arduboy->display(true);
+  } else {
+    currentStage->loop();    
+  }
 }

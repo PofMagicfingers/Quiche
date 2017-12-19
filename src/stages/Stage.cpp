@@ -2,28 +2,23 @@
 
 Stage::Stage(Arduboy2 *arduboy, StageSpeed speed) : 
 _arduboy(arduboy), speed(speed) {
+    score = 0;
+    score_label = "points";
+    finished = false;
+    level_music = "none";
+    stageStatus = StageStatus::SETUP;
 }
 
 void Stage::setup()
 {
     boomBox.setup(_arduboy);    
     boomBox.play(level_music);
-    score = 0;
-    score_label = "points";
-    finished = false;
-    stageStatus = StageStatus::STARTING;
-    _secElapsed = 0;
 }
 
 void Stage::loop() {
-    if (!(*_arduboy).nextFrame()) {
-        return;
-    }
-    (*_arduboy).pollButtons();
-
-    if((*_arduboy).everyXFrames(25)) {
-        _secElapsed++;
-    }
+    if (!_arduboy->nextFrame()) return;
+    
+    _arduboy->pollButtons();
 
     switch(stageStatus) {
         case StageStatus::STARTING:
@@ -40,7 +35,8 @@ void Stage::loop() {
 
 void Stage::wrapUp()
 {
-    stageStatus = StageStatus::ENDING;
+    boomBox.stop();
+    finished = true;
 }
 
 bool Stage::isFinished()

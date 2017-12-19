@@ -16,7 +16,7 @@ class BoomBox
     
   private:
     Arduboy2 *arduboyPtr;
-    ArduboyPlaytune tunes;
+    ArduboyPlaytune *tunes;
     bool setupDone = false;
 };
 
