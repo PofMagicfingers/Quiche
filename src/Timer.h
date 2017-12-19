@@ -13,12 +13,14 @@ class Timer
     bool isElapsed();
     bool isRunning();
     void reset();
+    void stop();
+    int frameElapsed = 0;
     
   private:
     Arduboy2 *arduboyPtr;
-    int frameElapsed = 0;
     int timeOutSec = 0;
     bool running = false;
-};
+    bool stopped = false;
+  };
 
 #endif

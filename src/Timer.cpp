@@ -9,8 +9,10 @@ void Timer::setTimeout(float seconds) {
 }
 
 void Timer::tick() {
-    frameElapsed++;
-    running = true;
+    if(timeOutSec > 0 && !stopped) {
+        frameElapsed++;
+        running = true;
+    }
 }
 
 float Timer::timeElapsed() {
@@ -22,10 +24,16 @@ bool Timer::isElapsed() {
 }
 
 bool Timer::isRunning() {
-    return running;
+    return running && !stopped;
+}
+
+void Timer::stop() {
+    stopped = true;
 }
 
 void Timer::reset() {
     frameElapsed = 0;
+    timeOutSec = 0;
     running = false;
+    stopped = false;
 }

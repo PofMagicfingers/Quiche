@@ -12,35 +12,34 @@ void Stage::setup()
     score_label = "points";
     finished = false;
     stageStatus = StageStatus::STARTING;
-    _secElapsed = 0;
 }
 
 void Stage::loop() {
-    if (!(*_arduboy).nextFrame()) {
-        return;
-    }
-    (*_arduboy).pollButtons();
+    if ((*_arduboy).nextFrame()) {
+        (*_arduboy).setCursor(0,0);
+        (*_arduboy).println("looping");
+        (*_arduboy).display(true);
+//        (*_arduboy).pollButtons();
 
-    if((*_arduboy).everyXFrames(25)) {
-        _secElapsed++;
-    }
-
-    switch(stageStatus) {
-        case StageStatus::STARTING:
-            startingLoop();
-            break;
-        case StageStatus::RUNNING:
-            runningLoop();
-            break;
-        case StageStatus::ENDING:
-            endingLoop();
-            break;
+        switch(stageStatus) {
+            case StageStatus::STARTING:
+                startingLoop();
+                break;
+            case StageStatus::RUNNING:
+                runningLoop();
+                break;
+            case StageStatus::ENDING:
+                endingLoop();
+                break;
+        }
     }
 }
 
 void Stage::wrapUp()
 {
-    stageStatus = StageStatus::ENDING;
+    if(boomBox.isPlaying())
+        boomBox.stop();
+    finished = true;
 }
 
 bool Stage::isFinished()

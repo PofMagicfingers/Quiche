@@ -17,24 +17,49 @@ With the DevKit only one part is played.
 ***************************************************************/
 
 #include <Arduboy2.h>
+#include "src/stages/Stage.h"
 #include "src/stages/Beer/Beer.h"
 
 Arduboy2 arduboy;
-Beer beerStage(&arduboy, StageSpeed::SLOW);
+// Stage *currentStage(0);
+Beer beerStage = Beer(&arduboy, StageSpeed::SLOW);
 
 void setup()
 {
-  arduboy.boot();
+  arduboy.begin();
 
   arduboy.setFrameRate(25);
   arduboy.setTextSize(1);
 
+  arduboy.clear();
+  arduboy.println("booting");
   arduboy.display(CLEAR_BUFFER);
+
+  // if(!currentStage) {
+  //   currentStage = new Beer(&arduboy, StageSpeed::SLOW);
+  //   currentStage->setup();
+  // }
 
   beerStage.setup();
 }
 
 void loop()
 {
-  beerStage.loop();
+  // if(currentStage->isFinished()) {
+  //   arduboy.clear();
+  //   arduboy.println("finito");
+  //   arduboy.display(CLEAR_BUFFER);
+  // } else {
+    if (!(arduboy.nextFrame()))
+    return;
+
+    // arduboy.setCursor(0,0);
+    // arduboy.println("looping");
+    // arduboy.display(CLEAR_BUFFER);
+    // if(currentStage) {
+    //   currentStage->loop();
+    // }
+
+    beerStage.loop();    
+// }
 }

@@ -17,39 +17,35 @@ void Beer::newBeer() {
     currentBeerSipsStep = (currentBeerMaxSips/5.0);
 }
 
-void Beer::loop() {
-    Stage::loop();
-}
-
 void Beer::setup()
 {
-    Stage::setup();
-
-    runningTimer = Timer(_arduboy);
-    runningTimer.setTimeout(3.5);
-
     currentBeer = 0;
     beerDrunk = 0;
     score_label = "bières";
-    level_music = "none";
+    level_music = "!connemara";
     newBeer();
+
+    // sceneTimer = Timer(_arduboy);
+    // sceneTimer.setTimeout(2.5);
+    Stage::setup();    
 }
 
 void Beer::startingLoop()
 {
     (*_arduboy).setCursor(0, 0);
     (*_arduboy).println("starting !");
-    (*_arduboy).print("uptime: ");
-    (*_arduboy).print(runningTimer.timeElapsed());
+    // (*_arduboy).print("uptime: ");
+    // (*_arduboy).println(sceneTimer.timeElapsed());
+    // (*_arduboy).print("f elap: ");
+    // (*_arduboy).println(sceneTimer.frameElapsed);
     (*_arduboy).display(CLEAR_BUFFER);
 
-    if(runningTimer.isElapsed()) {
-        runningTimer.reset();
-        runningTimer.setTimeout(5);
-        setStatus(StageStatus::RUNNING);
-    }    
+    // if(sceneTimer.isElapsed()) {
+    //     sceneTimer.stop();
+    //     setStatus(StageStatus::RUNNING);
+    // }
 
-    runningTimer.tick();
+    // sceneTimer.tick();    
 }
 
 void Beer::runningLoop()
@@ -73,32 +69,42 @@ void Beer::runningLoop()
         }
     }
 
+    
     (*_arduboy).setCursor(0, 0);
     (*_arduboy).println("running!");
-    (*_arduboy).print("uptime: ");
-    (*_arduboy).print(runningTimer.timeElapsed());
+    // (*_arduboy).print("uptime: ");
+    // (*_arduboy).print(sceneTimer.timeElapsed());
     (*_arduboy).display(CLEAR_BUFFER);
 
-    if(runningTimer.isElapsed()) {
-        wrapUp();
-    }
-    
-    runningTimer.tick();
+
+    // if(!sceneTimer.isRunning()) {
+    //     sceneTimer.reset();
+    //     sceneTimer.setTimeout(5);
+    // }
+
+    // if(sceneTimer.isElapsed()) {
+    //     sceneTimer.stop();
+    //     setStatus(StageStatus::ENDING);
+    // }
+
+    // sceneTimer.tick();
 }
 
 void Beer::endingLoop()
 {
-    (*_arduboy).setCursor(0, 0);
-    (*_arduboy).println("finished!");    
-    (*_arduboy).display(CLEAR_BUFFER);
-    finished = true;
-}
+    // (*_arduboy).setCursor(0, 0);
+    // (*_arduboy).println("wrapping up in 2.5 !");    
+    // (*_arduboy).display(CLEAR_BUFFER);
 
-void Beer::wrapUp()
-{
-    (*_arduboy).setCursor(0, 0);
-    (*_arduboy).println("bye !");
-    (*_arduboy).display(CLEAR_BUFFER);
-    Stage::wrapUp();
-    boomBox.stop();
+    // if(!sceneTimer.isRunning()) {
+    //     sceneTimer.reset();
+    //     sceneTimer.setTimeout(2.5);
+    // }
+
+    // if(sceneTimer.isElapsed()) {
+    //     sceneTimer.stop();
+    //     wrapUp();
+    // }
+    
+    // sceneTimer.tick();
 }
