@@ -41,7 +41,8 @@ class Stage
         int score;
         bool finished;
         StageSpeed speed;
-        BoomBox boomBox;
+        BoomBox boomBox;        
+        int _secElapsed;
 
     private:
         StageStatus stageStatus;        

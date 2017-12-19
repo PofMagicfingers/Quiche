@@ -18,13 +18,15 @@ class Beer : public Stage
     public:
         Beer(Arduboy2 *arbuboy, StageSpeed speed);
         void setup();
-    
+        void loop();
+        
     private:
         void newBeer();
         void startingLoop();
         void runningLoop();
         void endingLoop();
-        
+        void wrapUp();
+
         int currentBeer;
         int currentBeerSips;
         int currentBeerMaxSips;
@@ -33,7 +35,7 @@ class Beer : public Stage
         int maxBeer;
         BeerState currentBeerState;
 
-        Timer *sceneTimer;
+        Timer runningTimer = 0;
 };
 
 #endif
