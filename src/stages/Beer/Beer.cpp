@@ -7,9 +7,9 @@ Beer::Beer(Arduboy2 *arduboy, StageSpeed speed, BoomBox *bbox) : Stage(arduboy, 
     level_music = "connemara";
     runningTimer = new Timer(_arduboy);
     beerSprite = new BeerSprite(_arduboy);
-    speedFactor = (1.0 / (((int)speed + 0.5) / 2.0));
+    speedFactor = 1.0/sqrt((double)speed);
     startDuration = 1.0 * speedFactor;
-    runningDuration = 7.5 * speedFactor;
+    runningDuration = 8.0 * speedFactor;
     endDuration = 1.5 * speedFactor;
     percentage = 1;
 }
@@ -36,9 +36,17 @@ void Beer::startingLoop()
 {
     if (beerSprite->x < 30)
     {
-        if (_arduboy->everyXFrames(ceil((startDuration / 1.5) * _arduboy->getFrameRate()) / 60))
+        int frameDelta = max(1, round(((startDuration * 0.75) * _arduboy->getFrameRate()) / 60));
+        if (_arduboy->everyXFrames(frameDelta))
         {
-            beerSprite->x++;
+            if (frameDelta == 1)
+            {
+                beerSprite->x = beerSprite->x + ceil(60 / ((startDuration * 0.75) * _arduboy->getFrameRate()));
+            }
+            else
+            {
+                beerSprite->x++;
+            }
         }
     }
     else
@@ -47,11 +55,28 @@ void Beer::startingLoop()
         _arduboy->print(runningDuration);
         _arduboy->println("s");
     }
-    
-    if(_arduboy->everyXFrames(round((startDuration/160) * _arduboy->getFrameRate()))) {
-        percentage++;
-        _arduboy->fillRect(0, 55, ceil(160*(percentage/100)), 9, WHITE);
+
+    int frameDelta = max(1, round((startDuration * _arduboy->getFrameRate()) / 100));
+    if (_arduboy->everyXFrames(frameDelta))
+    {
+        if (percentage >= 99)
+        {
+            percentage = 100;
+        }
+        else
+        {
+            if (frameDelta == 1)
+            {
+                percentage = percentage + ceil(100 / (startDuration * _arduboy->getFrameRate()));
+            }
+            else
+            {
+                percentage++;
+            }
+        }
     }
+
+    _arduboy->fillRect(0, 58, ceil(WIDTH * (percentage / 100.0)), 6, WHITE);
 
     if (!runningTimer->isRunning())
     {
@@ -120,6 +145,29 @@ void Beer::runningLoop()
     runningTimer->tick();
 
     beerSprite->draw();
+
+    int frameDelta = max(1, round((runningDuration * _arduboy->getFrameRate()) / 100));
+    if (_arduboy->everyXFrames(frameDelta))
+    {
+        if (percentage <= 1)
+        {
+            percentage = 0;
+        }
+        else
+        {
+            if (frameDelta == 1)
+            {
+                percentage = percentage - ceil(100 / (runningDuration * _arduboy->getFrameRate()));
+            }
+            else
+            {
+                percentage--;
+            }
+        }
+    }
+
+    _arduboy->fillRect(0, 58, ceil(WIDTH * (percentage / 100.0)), 6, WHITE);
+
     _arduboy->display(CLEAR_BUFFER);
 }
 

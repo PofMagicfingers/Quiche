@@ -29,7 +29,7 @@ void setup()
 {
   arduboy->boot();
 
-  arduboy->setFrameRate(25);
+  arduboy->setFrameRate(60);
   arduboy->setTextSize(1);
 
   arduboy->audio.off();

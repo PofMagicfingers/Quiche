@@ -6,7 +6,7 @@
 
 enum class StageSpeed
 {
-    NORMAL,
+    NORMAL = 1,
     SPEEDY,
     FAST,
     INSANE
