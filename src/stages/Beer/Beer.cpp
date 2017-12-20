@@ -3,7 +3,7 @@
 Beer::Beer(Arduboy2 *arduboy, StageSpeed speed, BoomBox *bbox) : Stage(arduboy, speed, bbox)
 {
     score_label = "bieres";
-    level_music = "!connemara";
+    level_music = "connemara";
     runningTimer = new Timer(_arduboy);
     beerSprite = new BeerSprite(_arduboy);
     beerSprite->x = 50;
