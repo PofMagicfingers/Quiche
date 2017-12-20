@@ -32,7 +32,7 @@ void setup()
   arduboy->setFrameRate(25);
   arduboy->setTextSize(1);
 
-  arduboy->audio.off();
+  arduboy->audio.on();
   boomBox->setup(arduboy);
   // boomBox->playRandom();
 }
