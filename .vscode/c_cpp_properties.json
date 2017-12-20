@@ -9,7 +9,8 @@
                 "/opt/arduino/hardware/arduino/avr/variants/leonardo",
                 "/opt/arduino/hardware/arduino/avr/libraries/EEPROM/src",
                 "${workspaceRoot}/libraries/Arduboy2/src",
-                "${workspaceRoot}/libraries/ArduboyPlaytune/src"
+                "${workspaceRoot}/libraries/ArduboyPlaytune/src",
+                "${workspaceRoot}/libraries/ArdBitmap/src"
             ],
             "browse": {
                 "limitSymbolsToIncludedHeaders": false,

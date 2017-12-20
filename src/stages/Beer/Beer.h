@@ -5,17 +5,13 @@
 #include <Arduboy2.h>
 #include "../../Timer.h"
 
-enum class BeerState {
-    FULL = 1,
-    TOP,
-    HALF,
-    BOTTOM,
-    EMPTY
-};
+#include "./src/BeerState.h"
+#include "./src/BeerSprite.h"
 
 class Beer : public Stage
 {
     public:
+        Beer(Arduboy2 *arbuboy, StageSpeed speed, BoomBox *bbox);
         Beer(Arduboy2 *arbuboy, StageSpeed speed);
         void setup();
                 
@@ -33,6 +29,8 @@ class Beer : public Stage
         int beerDrunk;
         int maxBeer;
         BeerState currentBeerState;
+
+        BeerSprite * beerSprite;
 
         Timer *runningTimer;
 };

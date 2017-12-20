@@ -1,7 +1,7 @@
 #include "Stage.h"
 
-Stage::Stage(Arduboy2 *arduboy, StageSpeed speed) : 
-_arduboy(arduboy), speed(speed) {
+Stage::Stage(Arduboy2 *arduboy, StageSpeed speed, BoomBox *bbox) : 
+_arduboy(arduboy), speed(speed), boomBox(bbox) {
     score = 0;
     score_label = "points";
     finished = false;
@@ -9,10 +9,15 @@ _arduboy(arduboy), speed(speed) {
     stageStatus = StageStatus::SETUP;
 }
 
+Stage::Stage(Arduboy2 *arduboy, StageSpeed speed) : Stage(arduboy, speed, 0) { }
+
 void Stage::setup()
 {
-    boomBox.setup(_arduboy);    
-    boomBox.play(level_music);
+    if(!boomBox) {
+        boomBox = new BoomBox();
+    }
+    boomBox->setup(_arduboy);
+    boomBox->play(level_music);
 }
 
 void Stage::loop() {
@@ -35,7 +40,7 @@ void Stage::loop() {
 
 void Stage::wrapUp()
 {
-    boomBox.stop();
+    boomBox->stop();
     finished = true;
 }
 

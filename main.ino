@@ -17,11 +17,13 @@ With the DevKit only one part is played.
 ***************************************************************/
 
 #include <Arduboy2.h>
+Arduboy2 * arduboy = new Arduboy2();
+
 #include "src/stages/Stage.h"
 #include "src/stages/Beer/Beer.h"
 
-Arduboy2 * arduboy = new Arduboy2();
 Stage * currentStage;
+BoomBox * boomBox = new BoomBox();
 
 void setup()
 {
@@ -30,13 +32,15 @@ void setup()
   arduboy->setFrameRate(25);
   arduboy->setTextSize(1);
 
-  arduboy->audio.on();
+  arduboy->audio.off();
+  boomBox->setup(arduboy);
+  // boomBox->playRandom();
 }
 
 void loop()
 {
   if(!currentStage) {
-    currentStage = new Beer(arduboy, StageSpeed::SLOW);
+    currentStage = new Beer(arduboy, StageSpeed::SLOW, boomBox);
     currentStage->setup();
   }
 

@@ -24,12 +24,23 @@ void BoomBox::setup(Arduboy2 *arduboy)
     }
 }
 
+void BoomBox::playRandom() {
+    String tracks[] = {"connemara", "feder"};
+
+    randomSeed(analogRead(A0));
+    int itrack = random(0, 1);
+    play(tracks[itrack]);
+}
+
 void BoomBox::play(String track) {
     if(track == "connemara") {
         tunes->playScore(connemara);
     }
     if(track == "feder") {
         tunes->playScore(feder);
+    }
+    if(track == "random") {
+        playRandom();        
     }
 }
 

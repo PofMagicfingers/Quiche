@@ -4,7 +4,8 @@
 #include <Arduboy2.h>
 #include "../BoomBox.h"
 
-enum class StageSpeed {
+enum class StageSpeed
+{
     SLOW,
     NORMAL,
     SPEEDY,
@@ -12,7 +13,8 @@ enum class StageSpeed {
     INSANE
 };
 
-enum class StageStatus {
+enum class StageStatus
+{
     SETUP,
     STARTING,
     RUNNING,
@@ -21,31 +23,32 @@ enum class StageStatus {
 
 class Stage
 {
-    public:
-        Stage(Arduboy2 *arbuboy, StageSpeed speed);
-        virtual void setup();
-        virtual void loop();
-        virtual void wrapUp();
-        bool isFinished();
-        int getScore();
-        String getScoreLabel();
+  public:
+    Stage(Arduboy2 *arduboy, StageSpeed speed, BoomBox *bbox);
+    Stage(Arduboy2 *arbuboy, StageSpeed speed);
+    virtual void setup();
+    virtual void loop();
+    virtual void wrapUp();
+    bool isFinished();
+    int getScore();
+    String getScoreLabel();
 
-    protected:
-        virtual void startingLoop() = 0;
-        virtual void runningLoop() = 0;
-        virtual void endingLoop() = 0;
-        void setStatus(StageStatus);
+  protected:
+    virtual void startingLoop() = 0;
+    virtual void runningLoop() = 0;
+    virtual void endingLoop() = 0;
+    void setStatus(StageStatus);
 
-        Arduboy2 *_arduboy;
-        String score_label;
-        String level_music;
-        int score;
-        bool finished;
-        StageSpeed speed;
-        BoomBox boomBox;        
+    Arduboy2 *_arduboy;
+    String score_label;
+    String level_music;
+    int score;
+    bool finished;
+    StageSpeed speed;
+    BoomBox *boomBox;
 
-    private:
-        StageStatus stageStatus;        
+  private:
+    StageStatus stageStatus;
 };
 
 #endif

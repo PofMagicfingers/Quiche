@@ -10,6 +10,7 @@ class BoomBox
   public:
     void setup(Arduboy2 *arduboy);
     void play(String track);
+    void playRandom();
     void setSpeed(float speed);   
     void stop();
     boolean isPlaying();
