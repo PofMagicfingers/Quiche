@@ -2,11 +2,12 @@
 #define BeerState_h
 
 enum class BeerState {
-    FULL = 1,
+    FULL = 0,
     TOP,
     HALF,
     BOTTOM,
-    EMPTY
+    EMPTY,
+    RESET
 };
 
 #endif

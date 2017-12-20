@@ -22,15 +22,17 @@ class Beer : public Stage
         void endingLoop();
         void wrapUp();
 
-        int currentBeer;
         int currentBeerSips;
-        int currentBeerMaxSips;
-        float currentBeerSipsStep;
-        int beerDrunk;
-        int maxBeer;
         BeerState currentBeerState;
 
         BeerSprite * beerSprite;
+
+        double speedFactor;
+        double startDuration;
+        double runningDuration;
+        double endDuration;
+
+        int percentage;
 
         Timer *runningTimer;
 };

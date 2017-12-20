@@ -9,6 +9,7 @@ class BeerSprite // : public Sprite
   public:
     BeerSprite(Arduboy2 *arduboy);
     void draw();
+    void reset();
     BeerState state = BeerState::FULL;
     int16_t x = 0;
     int16_t y = 0;
@@ -18,6 +19,7 @@ class BeerSprite // : public Sprite
 
   private:
     Arduboy2 *arduboy;
+    int beerSeed;
 };
 
 #endif

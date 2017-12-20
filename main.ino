@@ -32,7 +32,7 @@ void setup()
   arduboy->setFrameRate(25);
   arduboy->setTextSize(1);
 
-  arduboy->audio.on();
+  arduboy->audio.off();
   boomBox->setup(arduboy);
   // boomBox->playRandom();
 }
@@ -40,7 +40,7 @@ void setup()
 void loop()
 {
   if(!currentStage) {
-    currentStage = new Beer(arduboy, StageSpeed::SLOW, boomBox);
+    currentStage = new Beer(arduboy, StageSpeed::NORMAL, boomBox);
     currentStage->setup();
   }
 

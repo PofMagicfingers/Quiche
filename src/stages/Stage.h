@@ -6,7 +6,6 @@
 
 enum class StageSpeed
 {
-    SLOW,
     NORMAL,
     SPEEDY,
     FAST,
@@ -41,6 +40,7 @@ class Stage
 
     Arduboy2 *_arduboy;
     String score_label;
+    String score_label_singular;
     String level_music;
     int score;
     bool finished;
