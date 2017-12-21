@@ -25,6 +25,18 @@ Arduboy2 * arduboy = new Arduboy2();
 Stage * currentStage;
 BoomBox * boomBox = new BoomBox();
 
+int stageDone = 0;
+
+enum class GameStatus {
+  BOOTING = 0,
+  MENU,
+  PLAYING,
+  GAMEOVER,
+  SCOREBOARD
+};
+
+GameStatus game_status = GameStatus::MENU;
+
 void setup()
 {
   arduboy->boot();
@@ -34,20 +46,71 @@ void setup()
 
   arduboy->audio.off();
   boomBox->setup(arduboy);
-  // boomBox->playRandom();
+  boomBox->playRandom();
+  
 }
 
 void loop()
 {
+  if(arduboy->nextFrame()) {
+    switch(game_status) {
+      case GameStatus::MENU:
+        menu();
+        break;
+      case GameStatus::PLAYING:
+        playing();
+        break;
+    }
+  }
+}
+
+int showStartText = 0;
+void menu() {
+  arduboy->setTextSize(3);
+  arduboy->setCursor(12, 15);
+  arduboy->println("QUICHE");
+  arduboy->setTextSize(1);
+
+  if(arduboy->everyXFrames(arduboy->getFrameRate()/2)) {
+    showStartText++;
+  }
+  if(showStartText > 0) {
+    arduboy->setCursor(12, 50);
+    arduboy->println("A/B pour commencer");
+    if(showStartText >= 3) showStartText = 0;
+  }
+  arduboy->display(CLEAR_BUFFER);
+}
+
+void playing() {
   if(!currentStage) {
-    currentStage = new Beer(arduboy, StageSpeed::NORMAL, boomBox);
+    
+    StageSpeed stageSpeed = StageSpeed::NORMAL;
+
+    if(stageDone > 3) {
+      stageSpeed = StageSpeed::SPEEDY;
+    }
+
+    if(stageDone > 7) {
+      stageSpeed = StageSpeed::FAST;
+    }
+
+    if(stageDone > 10) {
+      stageSpeed = StageSpeed::INSANE;
+    }
+
+    currentStage = new Beer(
+      arduboy, 
+      stageSpeed, 
+      boomBox
+    );
     currentStage->setup();
   }
 
   if(currentStage->isFinished()) {
-    arduboy->setCursor(0,0);
-    arduboy->println("FINITOTO!");
-    arduboy->display(true);
+    delete currentStage;
+    currentStage = NULL;
+    stageDone++;
   } else {
     currentStage->loop();    
   }

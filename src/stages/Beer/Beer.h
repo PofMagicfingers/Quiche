@@ -32,7 +32,10 @@ class Beer : public Stage
         double runningDuration;
         double endDuration;
 
+        bool showGo = true;
         int percentage;
+
+        Point scorePosition;
 
         Timer *runningTimer;
 };
