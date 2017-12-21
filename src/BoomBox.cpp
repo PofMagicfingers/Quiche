@@ -24,6 +24,10 @@ void BoomBox::setup(Arduboy2 *arduboy)
     }
 }
 
+BoomBox::~BoomBox() {
+    delete tunes;
+}
+
 void BoomBox::playRandom() {
     String tracks[] = {"connemara", "feder"};
 
@@ -34,10 +38,14 @@ void BoomBox::playRandom() {
 
 void BoomBox::play(String track) {
     if(track == "connemara") {
-        tunes->playScore(connemara);
+        randomSeed(analogRead(A0));
+        int itrack = round(random(1, 4));
+        tunes->playScore(itrack == 1 ? connemara_t1 : itrack == 2 ? connemara_t2 :  connemara_t3);
     }
     if(track == "feder") {
-        tunes->playScore(feder);
+        randomSeed(analogRead(A0));
+        int itrack = round(random(1, 4));
+        tunes->playScore(itrack == 1 ? feder_t1 : itrack == 2 ? feder_t2 :  feder_t3);
     }
     if(track == "random") {
         playRandom();        

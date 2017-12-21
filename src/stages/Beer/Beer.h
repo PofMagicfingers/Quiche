@@ -14,7 +14,8 @@ class Beer : public Stage
         Beer(Arduboy2 *arbuboy, StageSpeed speed, BoomBox *bbox);
         Beer(Arduboy2 *arbuboy, StageSpeed speed);
         void setup();
-                
+        ~Beer();
+
     private:
         void newBeer();
         void startingLoop();

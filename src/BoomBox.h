@@ -14,10 +14,11 @@ class BoomBox
     void setSpeed(float speed);   
     void stop();
     boolean isPlaying();
-    
+    ArduboyPlaytune *tunes;
+    ~BoomBox();
+
   private:
     Arduboy2 *arduboyPtr;
-    ArduboyPlaytune *tunes;
     bool setupDone = false;
 };
 

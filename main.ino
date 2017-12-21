@@ -17,17 +17,18 @@ With the DevKit only one part is played.
 ***************************************************************/
 
 #include <Arduboy2.h>
-Arduboy2 * arduboy = new Arduboy2();
+Arduboy2 *arduboy = new Arduboy2();
 
 #include "src/stages/Stage.h"
 #include "src/stages/Beer/Beer.h"
 
-Stage * currentStage;
-BoomBox * boomBox = new BoomBox();
+Stage *currentStage;
+BoomBox *boomBox = new BoomBox();
 
 int stageDone = 0;
 
-enum class GameStatus {
+enum class GameStatus
+{
   BOOTING = 0,
   MENU,
   PLAYING,
@@ -44,74 +45,123 @@ void setup()
   arduboy->setFrameRate(60);
   arduboy->setTextSize(1);
 
-  arduboy->audio.off();
+  arduboy->audio.on();
   boomBox->setup(arduboy);
-  boomBox->playRandom();
-  
 }
 
 void loop()
 {
-  if(arduboy->nextFrame()) {
-    switch(game_status) {
-      case GameStatus::MENU:
-        menu();
-        break;
-      case GameStatus::PLAYING:
-        playing();
-        break;
-    }
+  switch (game_status)
+  {
+  case GameStatus::MENU:
+    menu();
+    break;
+  case GameStatus::PLAYING:
+    playing();
+    break;
   }
 }
 
+int quichy = -50;
+bool playedBootSound = false;
+
 int showStartText = 0;
-void menu() {
+void menu()
+{
+  if (!arduboy->nextFrame())
+    return;
+
+  arduboy->pollButtons();
+
   arduboy->setTextSize(3);
-  arduboy->setCursor(12, 15);
+  arduboy->setCursor(12, quichy);
   arduboy->println("QUICHE");
   arduboy->setTextSize(1);
 
-  if(arduboy->everyXFrames(arduboy->getFrameRate()/2)) {
-    showStartText++;
+  if (quichy < 15)
+  {
+    if (arduboy->everyXFrames(3))
+    {
+      quichy++;
+    }
   }
-  if(showStartText > 0) {
-    arduboy->setCursor(12, 50);
-    arduboy->println("A/B pour commencer");
-    if(showStartText >= 3) showStartText = 0;
+  else if (quichy == 16)
+  {
+    quichy++;
   }
+  else
+  {
+    if (!playedBootSound)
+    {
+      boomBox->tunes->tone(1046, 100);
+      arduboy->delayShort(90);
+      boomBox->tunes->tone(2093, 500);
+
+      playedBootSound = true;
+    }
+
+    if (arduboy->everyXFrames(arduboy->getFrameRate() / 2))
+    {
+      showStartText++;
+    }
+    if (showStartText > 0)
+    {
+      arduboy->setCursor(12, 50);
+      arduboy->println("A/B pour commencer");
+      if (showStartText >= 3)
+      {
+        if (!boomBox->isPlaying())
+          boomBox->playRandom();
+        showStartText = 0;
+      }
+    }
+  }
+
+  if (arduboy->justReleased(A_BUTTON) || arduboy->justReleased(B_BUTTON))
+  {
+    game_status = GameStatus::PLAYING;
+  }
+
   arduboy->display(CLEAR_BUFFER);
 }
 
-void playing() {
-  if(!currentStage) {
-    
+void playing()
+{
+  if (!currentStage)
+  {
+
     StageSpeed stageSpeed = StageSpeed::NORMAL;
 
-    if(stageDone > 3) {
+    if (stageDone > 3)
+    {
       stageSpeed = StageSpeed::SPEEDY;
     }
 
-    if(stageDone > 7) {
+    if (stageDone > 7)
+    {
       stageSpeed = StageSpeed::FAST;
     }
 
-    if(stageDone > 10) {
+    if (stageDone > 10)
+    {
       stageSpeed = StageSpeed::INSANE;
     }
 
     currentStage = new Beer(
-      arduboy, 
-      stageSpeed, 
-      boomBox
-    );
+        arduboy,
+        stageSpeed,
+        boomBox);
     currentStage->setup();
   }
 
-  if(currentStage->isFinished()) {
+  if (currentStage->isFinished())
+  {
     delete currentStage;
     currentStage = NULL;
     stageDone++;
-  } else {
-    currentStage->loop();    
+  }
+  else
+  {
+    currentStage->loop();
   }
 }

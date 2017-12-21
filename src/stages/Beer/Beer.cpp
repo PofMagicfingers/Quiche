@@ -16,6 +16,11 @@ Beer::Beer(Arduboy2 *arduboy, StageSpeed speed, BoomBox *bbox) : Stage(arduboy, 
 
 Beer::Beer(Arduboy2 *arduboy, StageSpeed speed) : Beer(arduboy, speed, 0) {}
 
+Beer::~Beer() {
+    delete beerSprite;
+    delete runningTimer;
+}
+
 void Beer::newBeer()
 {
     currentBeerState = BeerState::FULL;
@@ -121,10 +126,11 @@ void Beer::runningLoop()
         currentBeerState = state;
         beerSprite->state = state;
 
-        // glouglou sound
-
         if (state == BeerState::RESET)
         {
+            boomBox->tunes->tone(500, 20);
+            _arduboy->delayShort(100);
+            boomBox->tunes->tone(800, 100);
             newBeer();
             score++;
         }
