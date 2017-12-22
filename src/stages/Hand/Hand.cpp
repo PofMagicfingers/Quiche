@@ -13,10 +13,50 @@ Hand::Hand(Arduboy2 *arduboy, StageSpeed speed, BoomBox *bbox) : Stage(arduboy, 
 
     speedFactor = 1.0 / sqrt((double)speed);
     startDuration = 2.0 * speedFactor;
-    runningDuration = round(30.0 * speedFactor);
+    runningDuration = round(3.0 * speedFactor);
     endDuration = 1.5 * speedFactor;
 
     percentage = 1;
+
+    randomSeed(analogRead(A0));
+    int randed = random(0, 40);
+    if(randed > 30) {
+        ballDirection = Direction::UP;
+    } else if(randed > 20) {
+        ballDirection = Direction::RIGHT;
+    } else if(randed > 10) {
+        ballDirection = Direction::LEFT;
+    } else if(randed > 0) {
+        ballDirection = Direction::DOWN;
+    }
+
+    switch (ballDirection) {
+        case Direction::LEFT:
+            ballStartPosition.x = -60;
+            ballStartPosition.y = 50;
+            ballEndPosition.x = 20;
+            ballEndPosition.y = 15;
+            break;
+        case Direction::RIGHT:
+            ballStartPosition.x = 175;
+            ballStartPosition.y = 50;
+            ballEndPosition.x = 58;
+            ballEndPosition.y = 15;
+            break;
+        case Direction::DOWN:
+            ballStartPosition.x = 40;
+            ballStartPosition.y = 64;
+            ballEndPosition.x = 40;
+            ballEndPosition.y = 20;
+            break;
+        case Direction::UP:
+            ballStartPosition.x = 40;
+            ballStartPosition.y = 64;
+            ballEndPosition.x = 35;
+            ballEndPosition.y = -5;
+            break;
+    }
+
 }
 
 Hand::~Hand()
@@ -35,6 +75,8 @@ void Hand::setup()
 
     quicheSprite->position.y = 25;
     quicheSprite->position.x = 45;
+
+    ballSprite->position = ballStartPosition;
 
     setStatus(StageStatus::STARTING);
 }
@@ -107,8 +149,9 @@ void Hand::startingLoop()
     _arduboy->println("GARDIENNE !");
     if (speed != StageSpeed::NORMAL)
     {
-        _arduboy->setCursor(5, 10);
-        _arduboy->print("vit. x");
+        _arduboy->setCursor(0, 10);
+        _arduboy->println("vit.");
+        _arduboy->print("  x");
         _arduboy->print((int)speed);
     }
 
@@ -121,10 +164,12 @@ void Hand::runningLoop()
     _arduboy->println("GARDIENNE !");
     if (speed != StageSpeed::NORMAL)
     {
-        _arduboy->setCursor(5, 10);
-        _arduboy->print("vit. x");
+        _arduboy->setCursor(0, 10);
+        _arduboy->println("vit.");
+        _arduboy->print("  x");
         _arduboy->print((int)speed);
     }
+
 
     if (_arduboy->everyXFrames(round(_arduboy->getFrameRate() * 0.6 * speedFactor)))
     {
@@ -133,7 +178,7 @@ void Hand::runningLoop()
 
     if (showGo)
     {
-        _arduboy->setCursor(0, 20);
+        _arduboy->setCursor(0, 50);
         _arduboy->println("GO !");
     }
 
@@ -141,41 +186,53 @@ void Hand::runningLoop()
     _arduboy->print(runningTimer->timeOutSec - runningTimer->timeElapsed());
     _arduboy->println("s");
 
-    int frameDelta = max(1, round((runningDuration * _arduboy->getFrameRate()) / 100));
-    if (_arduboy->everyXFrames(frameDelta))
+    if (runningTimer->timeElapsed() >= (runningDuration/4.0) && ballSprite->position.y > ballEndPosition.y)
     {
-        if (percentage <= 1)
-        {
-            percentage = 0;
-        }
-        else
+        int frameDelta = max(1, round(((runningDuration/2.0) * _arduboy->getFrameRate()) / abs(ballStartPosition.y - ballEndPosition.y) ));
+        if (_arduboy->everyXFrames(frameDelta))
         {
             if (frameDelta == 1)
             {
-                percentage = percentage - ceil(100 / (runningDuration * _arduboy->getFrameRate()));
+                ballSprite->position.y = ballSprite->position.y - ceil(abs(ballStartPosition.y - ballEndPosition.y) / ((runningDuration/2.0) * _arduboy->getFrameRate()));
             }
             else
             {
-                percentage--;
+                ballSprite->position.y--;
             }
         }
     }
 
-    _arduboy->fillRect(0, 60, ceil(WIDTH * (percentage / 100.0)), 4, WHITE);
-
-    if (!runningTimer->isRunning())
+    if (runningTimer->timeElapsed() >= (runningDuration/4.0) && ballSprite->size > 1)
     {
-        runningTimer->reset();
-        runningTimer->setTimeout(runningDuration);
+        int frameDelta = max(1, round(((runningDuration/2.0) * _arduboy->getFrameRate()) / 10 ));
+        if (_arduboy->everyXFrames(frameDelta))
+        {
+            if (frameDelta == 1)
+            {
+                ballSprite->size = ballSprite->size - ceil(10 / ((runningDuration/2.0) * _arduboy->getFrameRate()));
+            }
+            else
+            {
+                ballSprite->size--;
+            }
+        }
     }
 
-    if (runningTimer->isElapsed())
+    if (runningTimer->timeElapsed() >= (runningDuration/4.0) && (ballDirection == Direction::LEFT ? (ballSprite->position.x < ballEndPosition.x) : (ballSprite->position.x > ballEndPosition.x)))
     {
-        runningTimer->stop();
-        setStatus(StageStatus::ENDING);
+        int frameDelta = max(1, round(((runningDuration/2.0) * _arduboy->getFrameRate()) / abs(ballStartPosition.x - ballEndPosition.x) ));
+        if (_arduboy->everyXFrames(frameDelta))
+        {
+            if (frameDelta == 1)
+            {
+                ballSprite->position.x = ballSprite->position.x + ((ballDirection == Direction::RIGHT ? -1 : 1)*ceil(abs(ballStartPosition.x - ballEndPosition.x) / ((runningDuration/2.0) * _arduboy->getFrameRate())));
+            }
+            else
+            {
+                ballSprite->position.x = ballSprite->position.x + (ballDirection == Direction::RIGHT ? -1 : 1);
+            }
+        }
     }
-
-    runningTimer->tick();
 
     if (
         _arduboy->notPressed(UP_BUTTON) &&
@@ -205,32 +262,84 @@ void Hand::runningLoop()
         quicheSprite->direction = Direction::DOWN;
     }
 
+    if (!runningTimer->isRunning())
+    {
+        runningTimer->reset();
+        runningTimer->setTimeout(runningDuration);
+    }
+
+    if (runningTimer->isElapsed())
+    {
+        runningTimer->stop();
+        setStatus(StageStatus::ENDING);
+    }
+
+    runningTimer->tick();
+
     goalSprite->draw();
     quicheSprite->draw();
+    ballSprite->draw();
+
+    int frameDelta = max(1, round((runningDuration * _arduboy->getFrameRate()) / 100));
+    if (_arduboy->everyXFrames(frameDelta))
+    {
+        if (percentage <= 1)
+        {
+            percentage = 0;
+        }
+        else
+        {
+            if (frameDelta == 1)
+            {
+                percentage = percentage - ceil(100 / (runningDuration * _arduboy->getFrameRate()));
+            }
+            else
+            {
+                percentage--;
+            }
+        }
+    }
+
+    _arduboy->fillRect(0, 60, ceil(WIDTH * (percentage / 100.0)), 4, WHITE);
 
     _arduboy->display(CLEAR_BUFFER);
 }
 
 void Hand::endingLoop()
 {
-    _arduboy->setCursor(0, 0);
 
     if (!runningTimer->isRunning())
     {
+        if(ballDirection == quicheSprite->direction) {
+            score++;
+            boomBox->tunes->tone(440, 100);
+            _arduboy->delayShort(100);
+            boomBox->tunes->tone(1540, 600);
+        } else {
+            boomBox->tunes->tone(1440, 100);
+            _arduboy->delayShort(100);
+            boomBox->tunes->tone(200, 600);
+        }
+
         runningTimer->reset();
         runningTimer->setTimeout(endDuration);
     }
 
+    _arduboy->setCursor(40, 0);
+    _arduboy->print(score ? "EXCELLENT" : "  PERDU  ");
+
+    goalSprite->draw();
+    quicheSprite->draw();
+    ballSprite->draw();
+
+    _arduboy->display(CLEAR_BUFFER);
+
     if (runningTimer->isElapsed())
     {
         wrapUp();
+    } else {
+        runningTimer->tick();
     }
-
-    runningTimer->tick();
-
-    goalSprite->draw();
-
-    _arduboy->display(CLEAR_BUFFER);
 }
 
 void Hand::wrapUp()

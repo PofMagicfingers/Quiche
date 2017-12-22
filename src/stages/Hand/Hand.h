@@ -31,12 +31,16 @@ class Hand : public Stage
         bool showGo = true;
         int percentage;
 
+        bool ballShootPhaseTwo = false;
+
         Direction ballDirection;
 
         GoalSprite *goalSprite;
         QuicheSprite *quicheSprite;
         BallSprite *ballSprite;
-
+        Point ballStartPosition;
+        Point ballEndPosition;
+        
         Timer *runningTimer;
 };
 

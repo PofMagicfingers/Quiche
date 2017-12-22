@@ -10,18 +10,12 @@ Stage::Stage(Arduboy2 *arduboy, StageSpeed speed, BoomBox *bbox) : _arduboy(ardu
 }
 
 Stage::~Stage() {
-    delete _arduboy;
-    delete boomBox;
+    // delete _arduboy;
+    // delete boomBox;
 }
 
 void Stage::setup()
 {
-    if (!boomBox)
-    {
-        boomBox = new BoomBox();
-    }
-    boomBox->setup(_arduboy);
-
     switch (speed)
     {
     case StageSpeed::NORMAL:

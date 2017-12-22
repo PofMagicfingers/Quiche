@@ -46,7 +46,7 @@ void setup()
   arduboy->setFrameRate(60);
   arduboy->setTextSize(1);
 
-  arduboy->audio.off();
+  arduboy->audio.on();
   boomBox->setup(arduboy);
 }
 
@@ -126,8 +126,17 @@ void menu()
   arduboy->display(CLEAR_BUFFER);
 }
 
+int num = 0;
+
 void playing()
 {
+  if (currentStage && currentStage->isFinished())
+  {
+    stageDone++;
+    delete currentStage;
+    currentStage = NULL;
+  }
+
   if (!currentStage)
   {
 
@@ -148,21 +157,26 @@ void playing()
       stageSpeed = StageSpeed::INSANE;
     }
 
-    currentStage = new Hand(
-        arduboy,
-        stageSpeed,
-        boomBox);
+    int randed = random(0, 50);
+
+    if(randed < 26 || stageDone == 0) {
+      currentStage = new Hand(
+          arduboy,
+          stageSpeed,
+          boomBox);
+    }
+
+    if(randed > 25 || stageDone == 1) {
+      currentStage = new Beer(
+          arduboy,
+          stageSpeed,
+          boomBox);
+    }
+
     currentStage->setup();
   }
 
-  if (currentStage->isFinished())
-  {
-    delete currentStage;
-    currentStage = NULL;
-    stageDone++;
-  }
-  else
-  {
+  if(currentStage) {
     currentStage->loop();
   }
 }
