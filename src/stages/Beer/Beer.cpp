@@ -1,11 +1,12 @@
 #include "Beer.h"
 
+const String score_label_singular = "biere";
+const String score_label = "bieres";
+
+
 Beer::Beer(Arduboy2 *arduboy, StageSpeed speed, BoomBox *bbox) : Stage(arduboy, speed, bbox)
 {
-    score_label_singular = "biere";
-    score_label = "bieres";
-    level_music = "connemara";
-    runningTimer = new Timer(_arduboy);
+    level_music = Music::CONNEMARA;
     beerSprite = new BeerSprite(_arduboy);
     speedFactor = 1.0/sqrt((double)speed);
     startDuration = 1.0 * speedFactor;
@@ -16,7 +17,6 @@ Beer::Beer(Arduboy2 *arduboy, StageSpeed speed, BoomBox *bbox) : Stage(arduboy, 
 
 Beer::~Beer() {
     delete beerSprite;
-    delete runningTimer;
 }
 
 void Beer::newBeer()
@@ -32,6 +32,9 @@ void Beer::setup()
     newBeer();
     beerSprite->y = 25;
     beerSprite->x = -30;
+
+    goPosition.x = 100;
+    goPosition.y = 20;
 
     setStatus(StageStatus::STARTING);
 }
@@ -85,20 +88,20 @@ void Beer::startingLoop()
 
     _arduboy->fillRect(0, 58, ceil(WIDTH * (percentage / 100.0)), 6, WHITE);
 
-    if (!runningTimer->isRunning())
+    if (!stageTimer->isRunning())
     {
-        runningTimer->reset();
-        runningTimer->setTimeout(startDuration);
+        stageTimer->reset();
+        stageTimer->setTimeout(startDuration);
     }
 
-    if (runningTimer->isElapsed())
+    if (stageTimer->isElapsed())
     {
-        runningTimer->stop();
+        stageTimer->stop();
         beerSprite->x = 30;
         setStatus(StageStatus::RUNNING);
     }
 
-    runningTimer->tick();
+    stageTimer->tick();
 
     _arduboy->setCursor(3, 0);
     _arduboy->println("Bois un max de bieres !");
@@ -142,15 +145,6 @@ void Beer::runningLoop()
         _arduboy->print((int)speed);
     }
 
-    if(_arduboy->everyXFrames(round(_arduboy->getFrameRate()*0.6*speedFactor))) {
-        showGo = !showGo;
-    }
-
-    if(showGo) {
-        _arduboy->setCursor(100, 20);
-        _arduboy->println("GO !");
-    }
-
     scorePosition.x = 85 - ((score > 9 ? 2 : score > 1 ? 1 : 0) * 5);
     scorePosition.y = 35;
     _arduboy->setCursor(scorePosition.x, scorePosition.y);
@@ -159,7 +153,7 @@ void Beer::runningLoop()
     _arduboy->print(" " + (score > 1 ? score_label : score_label_singular));
 
     _arduboy->setCursor(95, 45);
-    _arduboy->print(runningTimer->timeOutSec - runningTimer->timeElapsed());
+    _arduboy->print(stageTimer->timeOutSec - stageTimer->timeElapsed());
     _arduboy->println("s");
 
     beerSprite->draw();
@@ -186,19 +180,19 @@ void Beer::runningLoop()
 
     _arduboy->fillRect(0, 58, ceil(WIDTH * (percentage / 100.0)), 6, WHITE);
 
-    if (!runningTimer->isRunning())
+    if (!stageTimer->isRunning())
     {
-        runningTimer->reset();
-        runningTimer->setTimeout(runningDuration);
+        stageTimer->reset();
+        stageTimer->setTimeout(runningDuration);
     }
 
-    if (runningTimer->isElapsed())
+    if (stageTimer->isElapsed())
     {
-        runningTimer->stop();
+        stageTimer->stop();
         setStatus(StageStatus::ENDING);
     }
 
-    runningTimer->tick();
+    stageTimer->tick();
     _arduboy->display(CLEAR_BUFFER);
 }
 
@@ -273,18 +267,18 @@ void Beer::endingLoop()
     _arduboy->print(score);
     _arduboy->print(" " + (score > 1 ? score_label : score_label_singular));
 
-    if (!runningTimer->isRunning())
+    if (!stageTimer->isRunning())
     {
-        runningTimer->reset();
-        runningTimer->setTimeout(endDuration);
+        stageTimer->reset();
+        stageTimer->setTimeout(endDuration);
     }
 
-    if (runningTimer->isElapsed())
+    if (stageTimer->isElapsed())
     {
         wrapUp();
     }
 
-    runningTimer->tick();
+    stageTimer->tick();
 
     beerSprite->draw();
     _arduboy->display(CLEAR_BUFFER);    

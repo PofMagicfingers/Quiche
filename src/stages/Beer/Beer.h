@@ -3,7 +3,6 @@
 
 #include "../Stage.h"
 #include <Arduboy2.h>
-#include "../../Timer.h"
 
 #include "./src/BeerState.h"
 #include "./src/BeerSprite.h"
@@ -27,17 +26,7 @@ class Beer : public Stage
 
         BeerSprite * beerSprite;
 
-        double speedFactor;
-        double startDuration;
-        double runningDuration;
-        double endDuration;
-
-        bool showGo = true;
-        int percentage;
-
         Point scorePosition;
-
-        Timer *runningTimer;
 };
 
 #endif

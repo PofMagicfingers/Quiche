@@ -3,15 +3,14 @@
 Stage::Stage(Arduboy2 *arduboy, StageSpeed speed, BoomBox *bbox) : _arduboy(arduboy), speed(speed), boomBox(bbox)
 {
     score = 0;
-    score_label = "points";
     finished = false;
-    level_music = "none";
     stageStatus = StageStatus::SETUP;
+    stageTimer = new Timer(_arduboy);
 }
 
-Stage::~Stage() {
-    // delete _arduboy;
-    // delete boomBox;
+Stage::~Stage()
+{
+    delete stageTimer;
 }
 
 void Stage::setup()
@@ -41,18 +40,79 @@ void Stage::loop()
 
     _arduboy->pollButtons();
 
+    int frameDelta;
+
     switch (stageStatus)
     {
     case StageStatus::STARTING:
         startingLoop();
+
+        transition(startDuration, 100, 100, 1, percentage);
+        _arduboy->fillRect(0, 60, ceil(WIDTH * (percentage / 100.0)), 4, WHITE);
+
+        if (!stageTimer->isRunning())
+        {
+            stageTimer->reset();
+            stageTimer->setTimeout(startDuration);
+        }
+
+        if (stageTimer->isElapsed())
+        {
+            stageTimer->stop();
+            setStatus(StageStatus::RUNNING);
+        }
+
+        stageTimer->tick();
         break;
     case StageStatus::RUNNING:
         runningLoop();
+
+        if (_arduboy->everyXFrames(round(_arduboy->getFrameRate() * 0.6 * speedFactor)))
+        {
+            showGo = !showGo;
+        }
+
+        if (showGo)
+        {
+            _arduboy->setCursor(goPosition.x, goPosition.y);
+            _arduboy->println("GO !");
+        }
+
+        transition(runningDuration, 100, 0, -1, percentage);
+        _arduboy->fillRect(0, 60, ceil(WIDTH * (percentage / 100.0)), 4, WHITE);
+
+        if (!stageTimer->isRunning())
+        {
+            stageTimer->reset();
+            stageTimer->setTimeout(runningDuration);
+        }
+
+        if (stageTimer->isElapsed())
+        {
+            stageTimer->stop();
+            setStatus(StageStatus::ENDING);
+        }
+
+        stageTimer->tick();
         break;
+        
     case StageStatus::ENDING:
         endingLoop();
+        if (!stageTimer->isRunning())
+        {
+            stageTimer->reset();
+            stageTimer->setTimeout(endDuration);
+        }
+
+        if (stageTimer->isElapsed())
+        {
+            wrapUp();
+        }
+        stageTimer->tick();
         break;
     }
+
+    _arduboy->display(CLEAR_BUFFER);
 }
 
 void Stage::wrapUp()
@@ -66,17 +126,31 @@ bool Stage::isFinished()
     return finished;
 }
 
-int Stage::getScore()
-{
-    return score;
-}
-
 void Stage::setStatus(StageStatus newStatus)
 {
     stageStatus = newStatus;
 }
 
-String Stage::getScoreLabel()
+void Stage::transition(float duration, int delta,
+                       int goal, int direction, int &attr)
 {
-    return score_label;
+    int frameDelta = max(1, round((duration * _arduboy->getFrameRate()) / delta));
+    if (_arduboy->everyXFrames(frameDelta))
+    {
+        if (direction ? attr >= goal : attr <= goal)
+        {
+            attr = goal;
+        }
+        else
+        {
+            if (frameDelta == 1)
+            {
+                attr = attr + direction * ceil(delta / (duration * _arduboy->getFrameRate()));
+            }
+            else
+            {
+                attr = attr + direction;
+            }
+        }
+    }
 }

@@ -3,7 +3,6 @@
 
 #include "../Stage.h"
 #include <Arduboy2.h>
-#include "../../Timer.h"
 
 #include "./src/Direction.h"
 #include "./src/QuicheSprite.h"
@@ -21,27 +20,18 @@ class Hand : public Stage
         void startingLoop();
         void runningLoop();
         void endingLoop();
-        void wrapUp();
-
-        double speedFactor;
-        double startDuration;
-        double runningDuration;
-        double endDuration;
-
-        bool showGo = true;
-        int percentage;
-
-        bool ballShootPhaseTwo = false;
+        
+        void printInstructions();
+        void drawTimer(double time);
 
         Direction ballDirection;
 
         GoalSprite *goalSprite;
         QuicheSprite *quicheSprite;
         BallSprite *ballSprite;
+        
         Point ballStartPosition;
         Point ballEndPosition;
-        
-        Timer *runningTimer;
 };
 
 #endif

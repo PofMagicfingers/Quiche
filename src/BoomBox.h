@@ -5,11 +5,17 @@
 #include <Arduboy2.h>
 #include <ArduboyPlaytune.h>
 
+enum class Music {
+  FEDER = 0, 
+  CONNEMARA,
+  RANDOM
+};
+
 class BoomBox
 {
   public:
     void setup(Arduboy2 *arduboy);
-    void play(String track);
+    void play(Music track);
     void playRandom();
     void setSpeed(float speed);   
     void stop();

@@ -3,10 +3,11 @@
 
 #include <Arduboy2.h>
 #include "../BoomBox.h"
+#include "../Timer.h"
 
 enum class StageSpeed
 {
-    NORMAL = 1,
+    NORMAL,
     SPEEDY,
     FAST,
     INSANE
@@ -30,7 +31,6 @@ class Stage
     virtual void wrapUp();
     bool isFinished();
     int getScore();
-    String getScoreLabel();
 
   protected:
     virtual void startingLoop() = 0;
@@ -38,14 +38,26 @@ class Stage
     virtual void endingLoop() = 0;
     void setStatus(StageStatus);
 
+    void transition(float duration, int delta, int goal, int direction, int &attr);
+
     Arduboy2 *_arduboy;
-    String score_label;
-    String score_label_singular;
-    String level_music;
+    Music level_music;
     int score;
     bool finished;
+
+    double speedFactor;
+    double startDuration;
+    double runningDuration;
+    double endDuration;
+
+    Point goPosition;
+
+    bool showGo = true;
+    int percentage = 1;
+    
     StageSpeed speed;
     BoomBox * boomBox;
+    Timer * stageTimer;
 
   private:
     StageStatus stageStatus;
