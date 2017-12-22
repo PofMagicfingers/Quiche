@@ -21,6 +21,9 @@ class Beer : public Stage
         void endingLoop();
         void wrapUp();
 
+        void drawTimer(double time);
+        void showInstructions();
+        
         int currentBeerSips;
         BeerState currentBeerState;
 
