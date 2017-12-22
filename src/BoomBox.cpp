@@ -26,6 +26,7 @@ void BoomBox::setup(Arduboy2 *arduboy)
 
 BoomBox::~BoomBox() {
     delete tunes;
+    delete arduboyPtr;
 }
 
 void BoomBox::playRandom() {

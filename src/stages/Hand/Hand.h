@@ -2,20 +2,42 @@
 #define Hand_h
 
 #include "../Stage.h"
+#include <Arduboy2.h>
+#include "../../Timer.h"
+
+#include "./src/Direction.h"
+#include "./src/QuicheSprite.h"
+#include "./src/BallSprite.h"
+#include "./src/GoalSprite.h"
 
 class Hand : public Stage
 {
     public:
-        Hand(Arduboy2 *arbuboy);
+        Hand(Arduboy2 *arbuboy, StageSpeed speed, BoomBox *bbox);
         void setup();
-        void loop();
-        bool isFinished();
-        int getScore();
-        String getScoreLabel();
+        ~Hand();
 
     private:
-        Arduboy2 *_arduboy
-        String score_label;        
-}
+        void startingLoop();
+        void runningLoop();
+        void endingLoop();
+        void wrapUp();
+
+        double speedFactor;
+        double startDuration;
+        double runningDuration;
+        double endDuration;
+
+        bool showGo = true;
+        int percentage;
+
+        Direction ballDirection;
+
+        GoalSprite *goalSprite;
+        QuicheSprite *quicheSprite;
+        BallSprite *ballSprite;
+
+        Timer *runningTimer;
+};
 
 #endif

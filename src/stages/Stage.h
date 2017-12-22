@@ -24,7 +24,7 @@ class Stage
 {
   public:
     Stage(Arduboy2 *arduboy, StageSpeed speed, BoomBox *bbox);
-    Stage(Arduboy2 *arbuboy, StageSpeed speed);
+    ~Stage();
     virtual void setup();
     virtual void loop();
     virtual void wrapUp();
@@ -45,7 +45,7 @@ class Stage
     int score;
     bool finished;
     StageSpeed speed;
-    BoomBox *boomBox;
+    BoomBox * boomBox;
 
   private:
     StageStatus stageStatus;

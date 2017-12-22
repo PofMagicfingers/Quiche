@@ -14,8 +14,6 @@ Beer::Beer(Arduboy2 *arduboy, StageSpeed speed, BoomBox *bbox) : Stage(arduboy, 
     percentage = 1;
 }
 
-Beer::Beer(Arduboy2 *arduboy, StageSpeed speed) : Beer(arduboy, speed, 0) {}
-
 Beer::~Beer() {
     delete beerSprite;
     delete runningTimer;

@@ -20,6 +20,7 @@ With the DevKit only one part is played.
 Arduboy2 *arduboy = new Arduboy2();
 
 #include "src/stages/Stage.h"
+#include "src/stages/Hand/Hand.h"
 #include "src/stages/Beer/Beer.h"
 
 Stage *currentStage;
@@ -45,7 +46,7 @@ void setup()
   arduboy->setFrameRate(60);
   arduboy->setTextSize(1);
 
-  arduboy->audio.on();
+  arduboy->audio.off();
   boomBox->setup(arduboy);
 }
 
@@ -147,7 +148,7 @@ void playing()
       stageSpeed = StageSpeed::INSANE;
     }
 
-    currentStage = new Beer(
+    currentStage = new Hand(
         arduboy,
         stageSpeed,
         boomBox);

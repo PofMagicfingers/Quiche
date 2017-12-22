@@ -9,7 +9,10 @@ Stage::Stage(Arduboy2 *arduboy, StageSpeed speed, BoomBox *bbox) : _arduboy(ardu
     stageStatus = StageStatus::SETUP;
 }
 
-Stage::Stage(Arduboy2 *arduboy, StageSpeed speed) : Stage(arduboy, speed, 0) {}
+Stage::~Stage() {
+    delete _arduboy;
+    delete boomBox;
+}
 
 void Stage::setup()
 {
