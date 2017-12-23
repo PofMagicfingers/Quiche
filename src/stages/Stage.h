@@ -7,7 +7,7 @@
 
 enum class StageSpeed
 {
-    NORMAL,
+    NORMAL = 1,
     SPEEDY,
     FAST,
     INSANE
@@ -15,7 +15,7 @@ enum class StageSpeed
 
 enum class StageStatus
 {
-    SETUP,
+    SETUP = 1,
     STARTING,
     RUNNING,
     ENDING

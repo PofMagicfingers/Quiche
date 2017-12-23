@@ -7,7 +7,6 @@ class Timer
 {
   public:
     Timer(Arduboy2 *arduboy);
-    ~Timer();
     void setTimeout(int seconds);
     void setTimeout(double seconds);
     void tick();

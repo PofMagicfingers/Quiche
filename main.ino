@@ -1,21 +1,3 @@
-/***************************************************************
-Play a musical composition in the background while
-the main sketch code runs in the foreground.
-
-The ArduboyPlaytune library must be installed to use this sketch
-https://github.com/Arduboy/ArduboyPlayTune
-
-The D-Pad buttons will move the text and play a tone.
-
-The A button mutes the sound.
-The screen is inverted when sound is muted.
-
-The B button will turn sound back on if it's muted.
-
-The score that is played contains two parts.
-With the DevKit only one part is played.
-***************************************************************/
-
 #include <Arduboy2.h>
 Arduboy2 *arduboy = new Arduboy2();
 
@@ -41,12 +23,17 @@ GameStatus game_status = GameStatus::MENU;
 
 void setup()
 {
+  stageDone = 0;
   arduboy->boot();
 
-  arduboy->setFrameRate(60);
+  arduboy->blank();
+  arduboy->flashlight();
+  arduboy->systemButtons();
+  arduboy->audio.begin();
+
+  arduboy->setFrameRate(50);
   arduboy->setTextSize(1);
 
-  arduboy->audio.off();
   boomBox->setup(arduboy);
 }
 
@@ -56,6 +43,9 @@ void loop()
   {
   case GameStatus::MENU:
     menu();
+    break;
+  case GameStatus::GAMEOVER:
+    gameover();
     break;
   case GameStatus::PLAYING:
     playing();
@@ -81,6 +71,28 @@ void menu()
 
   if (quichy < 15)
   {
+    if (quichy == -50)
+    {
+      arduboy->digitalWriteRGB(RED_LED, RGB_ON);
+    }
+
+    if (quichy == -30)
+    {
+      arduboy->digitalWriteRGB(RED_LED, RGB_OFF);  // red LED off
+      arduboy->digitalWriteRGB(GREEN_LED, RGB_ON); // green LED on
+    }
+
+    if (quichy == -10)
+    {
+      arduboy->digitalWriteRGB(GREEN_LED, RGB_OFF); // green LED off
+      arduboy->digitalWriteRGB(BLUE_LED, RGB_ON);   // blue LED on
+    }
+
+    if (quichy == 10)
+    {
+      arduboy->digitalWriteRGB(BLUE_LED, RGB_OFF);
+    }
+
     if (arduboy->everyXFrames(3))
     {
       quichy++;
@@ -118,25 +130,52 @@ void menu()
     }
   }
 
-  if (arduboy->justReleased(A_BUTTON) || arduboy->justReleased(B_BUTTON))
+  if (playedBootSound && (arduboy->justReleased(A_BUTTON) || arduboy->justReleased(B_BUTTON)))
   {
+    stageDone = 0;
     game_status = GameStatus::PLAYING;
+  }
+
+  if (arduboy->pressed(RIGHT_BUTTON))
+  {
+    arduboy->digitalWriteRGB(RGB_OFF, RGB_OFF, RGB_OFF);
   }
 
   arduboy->display(CLEAR_BUFFER);
 }
 
-int num = 0;
+void gameover()
+{
+  if (!arduboy->nextFrame())
+    return;
+
+  arduboy->clear();
+  arduboy->setTextSize(2);
+  arduboy->setCursor(13, 20);
+  arduboy->println("GAME OVER");
+  arduboy->setTextSize(1);
+  arduboy->setCursor(stageDone > 10 ? 9 : stageDone > 1 ? 13 : 20, 40);
+  arduboy->print(stageDone);
+  if (stageDone > 1)
+  {
+    arduboy->println(" niveaux gagnants");
+  }
+  else
+  {
+    arduboy->println(" niveau gagnant");
+  }
+
+  arduboy->display(CLEAR_BUFFER);
+
+  arduboy->pollButtons();
+  if (arduboy->justReleased(A_BUTTON) || arduboy->justReleased(B_BUTTON))
+  {
+    game_status = GameStatus::MENU;
+  }
+}
 
 void playing()
 {
-  if (currentStage && currentStage->isFinished())
-  {
-    stageDone++;
-    delete currentStage;
-    currentStage = NULL;
-  }
-
   if (!currentStage)
   {
 
@@ -159,14 +198,15 @@ void playing()
 
     int randed = random(0, 50);
 
-    if(randed < 26 || stageDone == 0) {
+    if (stageDone == 0 || stageDone > 1 && randed < 26)
+    {
       currentStage = new Hand(
           arduboy,
           stageSpeed,
           boomBox);
     }
-
-    if(randed > 25 || stageDone == 1) {
+    else if (stageDone == 1 || stageDone > 1 && randed > 25)
+    {
       currentStage = new Beer(
           arduboy,
           stageSpeed,
@@ -176,7 +216,23 @@ void playing()
     currentStage->setup();
   }
 
-  if(currentStage) {
+  if (currentStage)
+  {
+    arduboy->clear();
     currentStage->loop();
+  }
+
+  if (currentStage->isFinished())
+  {
+    if (currentStage->getScore() == 0)
+    {
+      game_status = GameStatus::GAMEOVER;
+    }
+    else
+    {
+      stageDone++;
+    }
+    delete currentStage;
+    currentStage = NULL;
   }
 }

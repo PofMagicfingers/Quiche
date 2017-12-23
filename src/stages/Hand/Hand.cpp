@@ -13,9 +13,7 @@ Hand::Hand(Arduboy2 *arduboy, StageSpeed speed, BoomBox *bbox) : Stage(arduboy, 
     runningDuration = round(3.0 * speedFactor);
     endDuration = 1.5 * speedFactor;
 
-    percentage = 1;
-
-    randomSeed(analogRead(A0));
+    _arduboy->initRandomSeed();
     int randed = random(0, 40);
     if(randed > 30) {
         ballDirection = Direction::UP;

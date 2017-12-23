@@ -7,13 +7,15 @@ Beer::Beer(Arduboy2 *arduboy, StageSpeed speed, BoomBox *bbox) : Stage(arduboy, 
 {
     level_music = Music::CONNEMARA;
     beerSprite = new BeerSprite(_arduboy);
-    speedFactor = 1.0/sqrt((double)speed);
+
+    speedFactor = 1.0 / sqrt(((int)speed)*1.0);
     startDuration = 1.0 * speedFactor;
     runningDuration = round(8.0 * speedFactor);
     endDuration = 1.5 * speedFactor;
 }
 
-Beer::~Beer() {
+Beer::~Beer()
+{
     delete beerSprite;
 }
 
@@ -37,7 +39,8 @@ void Beer::setup()
     setStatus(StageStatus::STARTING);
 }
 
-void Beer::drawTimer(double time) {
+void Beer::drawTimer(double time)
+{
     _arduboy->setCursor(95, 45);
     _arduboy->print(time);
     _arduboy->println("s");
@@ -52,14 +55,13 @@ void Beer::startingLoop()
             60,
             30,
             1,
-            beerSprite->x
-        );
+            beerSprite->x);
     }
     else
     {
         drawTimer(runningDuration);
         _arduboy->setCursor(85, 35);
-        _arduboy->print("0 biere");    
+        _arduboy->print("0 biere");
     }
 
     showInstructions();
@@ -67,10 +69,12 @@ void Beer::startingLoop()
     beerSprite->draw();
 }
 
-void Beer::showInstructions() {
-        _arduboy->setCursor(3, 0);
+void Beer::showInstructions()
+{
+    _arduboy->setCursor(3, 0);
     _arduboy->println("Bois un max de bieres !");
-    if(speed != StageSpeed::NORMAL) {
+    if (speed != StageSpeed::NORMAL)
+    {
         _arduboy->setCursor(5, 10);
         _arduboy->print("vit. x");
         _arduboy->print((int)speed);
@@ -121,35 +125,29 @@ void Beer::endingLoop()
         (endDuration * 0.75),
         45,
         70,
-        -1,
-        beerSprite->y
-    );
+        1,
+        beerSprite->y);
 
     int scoreDestX = round(
         (
             WIDTH - 5 -
-            (
-                (score > 10 ? 6.5 : 0) + 
-                (score > 1 ? 5 : 6) * 6.5
-            )
-        ) / 2
-    );
+            ((score > 10 ? 6.5 : 0) +
+             (score > 1 ? 5 : 6) * 6.5)) /
+        2);
 
     transition(
         (endDuration * 0.75),
-        (85-scoreDestX),
+        (85 - scoreDestX),
         scoreDestX,
         -1,
-        scorePosition.x
-    );
+        scorePosition.x);
 
     transition(
         (endDuration * 0.75),
         5,
         30,
         -1,
-        scorePosition.y
-    );
+        scorePosition.y);
 
     _arduboy->setCursor(scorePosition.x, scorePosition.y);
     _arduboy->print(score);

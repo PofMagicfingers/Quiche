@@ -8,10 +8,6 @@ Timer::Timer(Arduboy2 *arduboy) : arduboyPtr(arduboy)
     stopped = false;
 }
 
-Timer::~Timer() {
-    delete arduboyPtr;
-}
-
 void Timer::setTimeout(double seconds) {
     timeOutSec = seconds;
 }

@@ -25,14 +25,14 @@ BoomBox::~BoomBox()
 
 void BoomBox::playRandom()
 {
-    randomSeed(analogRead(A0));
+        arduboyPtr->initRandomSeed();
     int itrack = random(0, 1);
     play((Music)itrack);
 }
 
 void BoomBox::play(Music track)
 {
-    randomSeed(analogRead(A0));
+    arduboyPtr->initRandomSeed();
     int itrack = round(random(1, 4));
         
     switch (track)

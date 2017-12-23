@@ -40,8 +40,6 @@ void Stage::loop()
 
     _arduboy->pollButtons();
 
-    int frameDelta;
-
     switch (stageStatus)
     {
     case StageStatus::STARTING:
@@ -126,6 +124,11 @@ bool Stage::isFinished()
     return finished;
 }
 
+int Stage::getScore()
+{
+    return score;
+}
+
 void Stage::setStatus(StageStatus newStatus)
 {
     stageStatus = newStatus;
@@ -137,7 +140,10 @@ void Stage::transition(float duration, int delta,
     int frameDelta = max(1, round((duration * _arduboy->getFrameRate()) / delta));
     if (_arduboy->everyXFrames(frameDelta))
     {
-        if (direction ? attr >= goal : attr <= goal)
+        if (
+            (direction == 1 && attr >= goal) || 
+            (direction == -1 && attr <= goal)
+        )
         {
             attr = goal;
         }
