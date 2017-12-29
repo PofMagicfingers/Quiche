@@ -206,7 +206,7 @@ void Hand::endingLoop()
     if (!stageTimer->isRunning())
     {
         if(ballDirection == quicheSprite->direction) {
-            score++;
+            score.ballsStopped++;
             boomBox->tunes->tone(440, 100);
             _arduboy->delayShort(100);
             boomBox->tunes->tone(1540, 600);
@@ -218,9 +218,15 @@ void Hand::endingLoop()
     }
 
     _arduboy->setCursor(40, 0);
-    _arduboy->print(score ? "EXCELLENT" : "  PERDU  ");
+    _arduboy->print(score.ballsStopped ? "EXCELLENT" : "  PERDU  ");
 
     goalSprite->draw();
     quicheSprite->draw();
     ballSprite->draw();
+}
+
+void Hand::wrapUp()
+{
+    if(score.ballsStopped) score.stageDone = 1;
+    Stage::wrapUp();
 }

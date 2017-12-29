@@ -50,12 +50,16 @@ class Game
     void gameover();
     void playing();
 
+    void saveRecord();
+    void printScores(StageScore score);
+
     static Game *_singleton;
 
     Arduboy2 *arduboy;
     Stage *currentStage;
     BoomBox *boomBox;
-    int stageDone = 0;
+    StageScore recordScore;
+    StageScore currentScore;
     GameStatus game_status = GameStatus::MENU;
 
     int quichy = -50;

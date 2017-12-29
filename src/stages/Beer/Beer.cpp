@@ -1,8 +1,5 @@
 #include "Beer.h"
 
-const String score_label_singular = " biere";
-const String score_label = " bieres";
-
 Beer::Beer(Arduboy2 *arduboy, StageSpeed speed, BoomBox *bbox) : Stage(arduboy, speed, bbox)
 {
     level_music = Music::CONNEMARA;
@@ -99,18 +96,18 @@ void Beer::runningLoop()
             _arduboy->delayShort(100);
             boomBox->tunes->tone(800, 100);
             newBeer();
-            score++;
+            score.beersDrunk++;
         }
     }
 
     showInstructions();
 
-    scorePosition.x = 85 - ((score > 9 ? 2 : score > 1 ? 1 : 0) * 5);
+    scorePosition.x = 85 - ((score.beersDrunk > 9 ? 2 : score.beersDrunk > 1 ? 1 : 0) * 5);
     scorePosition.y = 35;
     _arduboy->setCursor(scorePosition.x, scorePosition.y);
 
-    _arduboy->print(score);
-    _arduboy->print((score > 1 ? score_label : score_label_singular));
+    _arduboy->print(score.beersDrunk);
+    _arduboy->print((score.beersDrunk > 1 ? BEERSDRUNK_STR : BEERDRUNK_STR));
 
     drawTimer(stageTimer->timeOutSec - stageTimer->timeElapsed());
 
@@ -131,8 +128,8 @@ void Beer::endingLoop()
     int scoreDestX = round(
         (
             WIDTH - 5 -
-            ((score > 10 ? 6.5 : 0) +
-             (score > 1 ? 5 : 6) * 6.5)) /
+            ((score.beersDrunk > 10 ? 6.5 : 0) +
+             (score.beersDrunk > 1 ? 5 : 6) * 6.5)) /
         2);
 
     transition(
@@ -150,14 +147,14 @@ void Beer::endingLoop()
         scorePosition.y);
 
     _arduboy->setCursor(scorePosition.x, scorePosition.y);
-    _arduboy->print(score);
-    _arduboy->print((score > 1 ? score_label : score_label_singular));
+    _arduboy->print(score.beersDrunk);
+    _arduboy->print((score.beersDrunk > 1 ? BEERSDRUNK_STR : BEERDRUNK_STR));
 
     beerSprite->draw();
 }
 
 void Beer::wrapUp()
 {
-    _arduboy->display(CLEAR_BUFFER);
+    if(score.beersDrunk) score.stageDone = 1;
     Stage::wrapUp();
 }

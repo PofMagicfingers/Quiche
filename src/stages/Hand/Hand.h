@@ -9,6 +9,9 @@
 #include "./src/BallSprite.h"
 #include "./src/GoalSprite.h"
 
+const char BALLSTOPPED_STR[] = " arret";
+const char BALLSSTOPPED_STR[] = " arrets";
+
 class Hand : public Stage
 {
     public:
@@ -20,6 +23,7 @@ class Hand : public Stage
         void startingLoop();
         void runningLoop();
         void endingLoop();
+        void wrapUp();
         
         void printInstructions();
         void drawTimer(double time);

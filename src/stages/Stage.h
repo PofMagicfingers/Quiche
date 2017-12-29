@@ -5,6 +5,13 @@
 #include "../BoomBox.h"
 #include "../Timer.h"
 
+
+struct StageScore {
+    int stageDone = 0;
+    int beersDrunk = 0;
+    int ballsStopped = 0;
+};
+
 enum class StageSpeed
 {
     NORMAL = 1,
@@ -30,7 +37,7 @@ class Stage
     virtual void loop();
     virtual void wrapUp();
     bool isFinished();
-    int getScore();
+    StageScore getScore();
 
   protected:
     virtual void startingLoop() = 0;
@@ -42,7 +49,7 @@ class Stage
 
     Arduboy2 *_arduboy;
     Music level_music;
-    int score;
+    StageScore score;
     bool finished;
 
     double speedFactor;

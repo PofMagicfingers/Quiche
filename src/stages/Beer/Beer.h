@@ -7,6 +7,9 @@
 #include "./src/BeerState.h"
 #include "./src/BeerSprite.h"
 
+const char BEERDRUNK_STR[] = " biere";
+const char BEERSDRUNK_STR[] = " bieres";
+
 class Beer : public Stage
 {
     public:

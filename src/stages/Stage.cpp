@@ -2,7 +2,9 @@
 
 Stage::Stage(Arduboy2 *arduboy, StageSpeed speed, BoomBox *bbox) : _arduboy(arduboy), speed(speed), boomBox(bbox)
 {
-    score = 0;
+    score.stageDone = 0;
+    score.ballsStopped = 0;
+    score.beersDrunk = 0;
     finished = false;
     stageStatus = StageStatus::SETUP;
     stageTimer = new Timer(_arduboy);
@@ -124,7 +126,7 @@ bool Stage::isFinished()
     return finished;
 }
 
-int Stage::getScore()
+StageScore Stage::getScore()
 {
     return score;
 }
