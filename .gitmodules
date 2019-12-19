@@ -1,0 +1,3 @@
+[submodule "libraries/ArduboyPlaytune"]
+	path = libraries/ArduboyPlaytune
+	url = git@github.com:PofMagicfingers/ArduboyPlaytune.git
