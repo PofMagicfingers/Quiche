@@ -66,6 +66,4 @@ class Game
     bool playedBootSound = false;
     int showStartText = 0;
 };
-
-Game *Game::_singleton = NULL;
 #endif

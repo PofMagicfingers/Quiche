@@ -249,3 +249,5 @@ void Game::playing()
         currentStage = NULL;
     }
 }
+
+Game *Game::_singleton = NULL;

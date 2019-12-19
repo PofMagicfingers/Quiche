@@ -1,5 +1,5 @@
 {
     "port": "/dev/ttyACM0",
-    "board": "arduino:avr:leonardo",
-    "sketch": "main.ino"
+    "board": "arduboy:avr:arduboy",
+    "sketch": "main/main.ino"
 }
